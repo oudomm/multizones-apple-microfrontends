@@ -1,103 +1,135 @@
-# Next.js Multi-Zones Demo
+# Turborepo starter
 
-A micro-frontend architecture demo using **Next.js Multi-Zones** in a Turborepo monorepo. Three independent Next.js apps serve different parts of a single website, sharing UI components and global state.
+This Turborepo starter is maintained by the Turborepo core team.
 
-## Tech Stack
+## Using this example
 
-| Tool | Version | Purpose |
-|------|---------|---------|
-| Next.js | 16 | React framework (Turbopack) |
-| React | 19 | UI library |
-| TypeScript | 5.9 | Type safety |
-| Tailwind CSS | 4 | Utility-first CSS (CSS-first config) |
-| Turborepo | 2.8 | Monorepo task runner |
+Run the following command:
 
-## Project Structure
-
-```
-nextjs-multizones-demo/
-├── apps/
-│   ├── home/          # Main zone — localhost:3000 (serves /, proxies /store & /mac)
-│   ├── store/         # Store zone — localhost:3001 (basePath: /store)
-│   └── mac/           # Mac zone — localhost:3002 (basePath: /mac)
-├── packages/
-│   ├── ui/            # Shared components (Navigation, Button, Card)
-│   └── shared-state/  # Cross-zone state via localStorage
-├── docs/
-│   └── LEARNING-GUIDE.md
-├── turbo.json
-├── tsconfig.base.json
-└── package.json
+```sh
+npx create-turbo@latest
 ```
 
-## How Multi-Zones Work
+## What's inside?
 
-Each zone is an independent Next.js app that owns a URL path:
+This Turborepo includes the following packages/apps:
 
-| Zone | URL Path | Dev Port | `basePath` | `assetPrefix` |
-|------|----------|----------|------------|---------------|
-| Home | `/` | 3000 | _(none)_ | _(none)_ |
-| Store | `/store` | 3001 | `/store` | `/store-static` |
-| Mac | `/mac` | 3002 | `/mac` | `/mac-static` |
+### Apps and Packages
 
-The **home app** acts as the entry point and proxies requests via `rewrites`:
+- `docs`: a [Next.js](https://nextjs.org/) app
+- `web`: another [Next.js](https://nextjs.org/) app
+- `@repo/ui`: a stub React component library shared by both `web` and `docs` applications
+- `@repo/eslint-config`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)
+- `@repo/typescript-config`: `tsconfig.json`s used throughout the monorepo
 
-```
-Browser → localhost:3000/store → rewrite → localhost:3001/store
-Browser → localhost:3000/mac → rewrite → localhost:3002/mac
-```
+Each package/app is 100% [TypeScript](https://www.typescriptlang.org/).
 
-`assetPrefix` ensures each zone's JS/CSS assets don't collide (e.g. store assets are served from `/store-static/_next/...`).
+### Utilities
 
-## Getting Started
+This Turborepo has some additional tools already setup for you:
 
-### Prerequisites
-
-- Node.js >= 20.9.0
-- npm >= 10
-
-### Install & Run
-
-```bash
-npm install
-npm run dev
-```
-
-This starts all three zones in parallel via Turborepo:
-
-- Home: [http://localhost:3000](http://localhost:3000)
-- Store: [http://localhost:3000/store](http://localhost:3000/store)
-- Mac: [http://localhost:3000/mac](http://localhost:3000/mac)
+- [TypeScript](https://www.typescriptlang.org/) for static type checking
+- [ESLint](https://eslint.org/) for code linting
+- [Prettier](https://prettier.io) for code formatting
 
 ### Build
 
-```bash
-npm run build
-```
-
-## Key Concepts
-
-- **Multi-Zones** — each zone is a standalone Next.js app that can be developed, deployed, and scaled independently
-- **Shared UI** — `@repo/ui` provides common components (Navigation, Button, Card) used across all zones via `transpilePackages`
-- **Shared State** — `@repo/shared-state` uses localStorage so cart and user data persist across full-page navigations between zones
-- **Tailwind CSS v4** — CSS-first config with `@import "tailwindcss"` and `@source` directive for monorepo package scanning
-- **`<a>` not `<Link>`** — cross-zone navigation uses standard anchor tags (full page reload triggers the rewrite rules)
-
-## Tailwind CSS Setup (Monorepo)
-
-Each app has its own PostCSS + Tailwind setup:
+To build all apps and packages, run the following command:
 
 ```
-apps/home/
-├── postcss.config.mjs        # { "@tailwindcss/postcss": {} }
-└── app/globals.css            # @import "tailwindcss"; @source "../../../packages/ui/src";
+cd my-turborepo
+
+# With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed (recommended)
+turbo build
+
+# Without [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation), use your package manager
+npx turbo build
+yarn dlx turbo build
+pnpm exec turbo build
 ```
 
-The `@source` directive tells Tailwind to scan the shared `packages/ui` for class names used in shared components.
+You can build a specific package by using a [filter](https://turborepo.dev/docs/crafting-your-repository/running-tasks#using-filters):
 
-## Learn More
+```
+# With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed (recommended)
+turbo build --filter=docs
 
-- [Next.js Multi-Zones Guide](https://nextjs.org/docs/app/guides/multi-zones)
-- [Tailwind CSS v4 + Next.js](https://tailwindcss.com/docs/guides/nextjs)
-- [Turborepo Docs](https://turbo.build/repo/docs)
-- See [`docs/LEARNING-GUIDE.md`](docs/LEARNING-GUIDE.md) for a detailed walkthrough of the architecture
+# Without [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation), use your package manager
+npx turbo build --filter=docs
+yarn exec turbo build --filter=docs
+pnpm exec turbo build --filter=docs
+```
+
+### Develop
+
+To develop all apps and packages, run the following command:
+
+```
+cd my-turborepo
+
+# With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed (recommended)
+turbo dev
+
+# Without [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation), use your package manager
+npx turbo dev
+yarn exec turbo dev
+pnpm exec turbo dev
+```
+
+You can develop a specific package by using a [filter](https://turborepo.dev/docs/crafting-your-repository/running-tasks#using-filters):
+
+```
+# With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed (recommended)
+turbo dev --filter=web
+
+# Without [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation), use your package manager
+npx turbo dev --filter=web
+yarn exec turbo dev --filter=web
+pnpm exec turbo dev --filter=web
+```
+
+### Remote Caching
+
+> [!TIP]
+> Vercel Remote Cache is free for all plans. Get started today at [vercel.com](https://vercel.com/signup?/signup?utm_source=remote-cache-sdk&utm_campaign=free_remote_cache).
+
+Turborepo can use a technique known as [Remote Caching](https://turborepo.dev/docs/core-concepts/remote-caching) to share cache artifacts across machines, enabling you to share build caches with your team and CI/CD pipelines.
+
+By default, Turborepo will cache locally. To enable Remote Caching you will need an account with Vercel. If you don't have an account you can [create one](https://vercel.com/signup?utm_source=turborepo-examples), then enter the following commands:
+
+```
+cd my-turborepo
+
+# With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed (recommended)
+turbo login
+
+# Without [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation), use your package manager
+npx turbo login
+yarn exec turbo login
+pnpm exec turbo login
+```
+
+This will authenticate the Turborepo CLI with your [Vercel account](https://vercel.com/docs/concepts/personal-accounts/overview).
+
+Next, you can link your Turborepo to your Remote Cache by running the following command from the root of your Turborepo:
+
+```
+# With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed (recommended)
+turbo link
+
+# Without [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation), use your package manager
+npx turbo link
+yarn exec turbo link
+pnpm exec turbo link
+```
+
+## Useful Links
+
+Learn more about the power of Turborepo:
+
+- [Tasks](https://turborepo.dev/docs/crafting-your-repository/running-tasks)
+- [Caching](https://turborepo.dev/docs/crafting-your-repository/caching)
+- [Remote Caching](https://turborepo.dev/docs/core-concepts/remote-caching)
+- [Filtering](https://turborepo.dev/docs/crafting-your-repository/running-tasks#using-filters)
+- [Configuration Options](https://turborepo.dev/docs/reference/configuration)
+- [CLI Usage](https://turborepo.dev/docs/reference/command-line-reference)

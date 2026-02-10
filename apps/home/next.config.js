@@ -1,6 +1,5 @@
-import type { NextConfig } from 'next';
-
-const nextConfig: NextConfig = {
+/** @type {import('next').NextConfig} */
+const nextConfig = {
   transpilePackages: ['@repo/ui', '@repo/shared-state'],
   poweredByHeader: false,
   compress: true,
@@ -13,8 +12,8 @@ const nextConfig: NextConfig = {
 
   async rewrites() {
     const store = process.env.STORE_URL ?? 'http://localhost:3001';
-    const mac = process.env.MAC_URL ?? 'http://localhost:3002';
-    const iphone = process.env.IPHONE_URL ?? 'http://localhost:3003';
+    const mac = process.env.MAC_URL ?? 'http://localhost:3003';
+    const iphone = process.env.IPHONE_URL ?? 'http://localhost:3002';
 
     return {
       beforeFiles: [

@@ -1,6 +1,6 @@
 'use client';
 
-import { AppleLogo, Button, ButtonLink, Navigation } from '@repo/ui';
+import { AppleLogo, ButtonLink, Navigation } from '@repo/ui';
 import { useMemo } from 'react';
 import Image from 'next/image';
 import iphone17Series from '@repo/ui/assets/images/iphone-17-series.webp'

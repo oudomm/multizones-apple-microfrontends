@@ -1,8 +1,7 @@
-import type { NextConfig } from 'next';
-
-const nextConfig: NextConfig = {
-  basePath: '/iphone',
-  assetPrefix: '/iphone-static',
+/** @type {import('next').NextConfig} */
+const nextConfig = {
+  basePath: '/mac',
+  assetPrefix: '/mac-static',
   transpilePackages: ['@repo/ui', '@repo/shared-state'],
   poweredByHeader: false,
   compress: true,

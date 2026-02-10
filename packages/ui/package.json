@@ -2,19 +2,30 @@
   "name": "@repo/ui",
   "version": "0.0.0",
   "private": true,
-  "main": "./src/index.tsx",
+   "main": "./src/index.tsx",
   "types": "./src/index.tsx",
+  "exports": {
+    ".": "./src/index.tsx",
+    "./*": "./src/*.tsx",
+     "./assets/*": "./assets/*"
+  },
   "scripts": {
     "lint": "eslint . --max-warnings 0",
-    "clean": "rm -rf .turbo node_modules"
-  },
-  "peerDependencies": {
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0"
+    "generate:component": "turbo gen react-component",
+    "check-types": "tsc --noEmit"
   },
   "devDependencies": {
-    "@types/react": "^19.0.0",
-    "@types/react-dom": "^19.0.0",
-    "typescript": "^5.7.0"
+    "@repo/eslint-config": "*",
+    "@repo/typescript-config": "*",
+    "@types/node": "^22.15.3",
+    "@types/react": "19.2.2",
+    "@types/react-dom": "19.2.2",
+    "eslint": "^9.39.1",
+    "typescript": "5.9.2"
+  },
+  "dependencies": {
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
+    "@repo/shared-state": "*"
   }
 }
