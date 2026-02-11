@@ -1,2 +1,4 @@
 @import "tailwindcss";
 @source "../../../packages/ui/src";
+@source not ".next";
+@source not "node_modules";
