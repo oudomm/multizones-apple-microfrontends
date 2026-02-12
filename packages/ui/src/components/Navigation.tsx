@@ -63,7 +63,7 @@ export const Navigation: React.FC<NavigationProps> = ({ items, currentZone }) =>
                 <button
                     type="button"
                     onClick={() => uiEvents.openCart()}
-                    className="relative inline-flex items-center justify-center h-9 w-9 rounded-full hover:bg-gray-100 transition"
+                    className="relative inline-flex items-center justify-center h-9 w-9 rounded-full hover:bg-gray-100 transition cursor-pointer"
                     aria-label="Shopping bag"
                     title="Bag"
                 >
