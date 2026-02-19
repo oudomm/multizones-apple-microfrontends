@@ -1,17 +1,15 @@
-'use client';
-
 import { ButtonLink, Navigation } from '@repo/ui';
 import macbookPro16 from '@repo/ui/assets/images/macbook-pro-16.png';
 import Image from 'next/image';
 
-export default function MacPage() {
-  const navItems = [
-    { label: 'Home', href: '/' },
-    { label: 'Store', href: '/store' },
-    { label: 'iPhone', href: '/iphone' },
-    { label: 'Mac', href: '/mac' },
-  ];
+const navItems = [
+  { label: 'Home', href: '/' },
+  { label: 'Store', href: '/store' },
+  { label: 'iPhone', href: '/iphone' },
+  { label: 'Mac', href: '/mac' },
+];
 
+export default function MacPage() {
   return (
     <div className="min-h-screen bg-white text-[#1d1d1f]">
       <Navigation items={navItems} currentZone="/mac" />

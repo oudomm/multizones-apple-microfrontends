@@ -1,16 +1,18 @@
-// packages/ui/src/components/Navigation.tsx
 "use client";
 
-import React, { useEffect, useRef, useState } from "react";
-import type { GlobalState } from "@repo/shared-state";
+import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
 import {
-    getGlobalState,
-    subscribeToStateChanges,
-    userOperations,
+    useAppSelector,
+    useAppDispatch,
+    getUserFromCookie,
+    logoutUser,
 } from "@repo/shared-state";
 import { uiEvents } from "@repo/shared-state";
-import { AppleLogo } from "../icons/AppleLogo";
-import { BagIcon } from "../icons/BagIcon";
+import { AppleLogo } from "../icons/apple-logo";
+import { BagIcon } from "../icons/bag-icon";
+
+const useIsomorphicLayoutEffect =
+    typeof window !== "undefined" ? useLayoutEffect : useEffect;
 
 interface NavItem {
     label: string;
@@ -23,42 +25,32 @@ interface NavigationProps {
 }
 
 export const Navigation: React.FC<NavigationProps> = ({ items, currentZone }) => {
-    const [cartCount, setCartCount] = useState(() => {
-        const s = getGlobalState();
-        return s.cart.reduce((sum, i) => sum + i.quantity, 0);
-    });
+    const cartItems = useAppSelector((s) => s.cart.items);
+    const user = useAppSelector((s) => s.user.profile);
+    const dispatch = useAppDispatch();
 
-    const [userName, setUserName] = useState<string | null>(() => {
-        const s = getGlobalState();
-        return s.user?.name ?? null;
-    });
+    const cartCount = cartItems.reduce((sum, i) => sum + i.quantity, 0);
 
-    const [userEmail, setUserEmail] = useState<string | null>(() => {
-        const s = getGlobalState();
-        return s.user?.email ?? null;
-    });
+    // Cookie fallback for no-flash before Redux hydrates
+    const [cookieUser, setCookieUser] = useState<{ name: string; email: string } | null>(null);
+    useIsomorphicLayoutEffect(() => {
+        setCookieUser(getUserFromCookie());
+    }, []);
+
+    const userName = user?.name ?? cookieUser?.name ?? null;
+    const userEmail = user?.email ?? cookieUser?.email ?? null;
 
     const [menuOpen, setMenuOpen] = useState(false);
     const menuRef = useRef<HTMLDivElement | null>(null);
 
     useEffect(() => {
-        const unsubscribe = subscribeToStateChanges((newState: GlobalState) => {
-            setCartCount(newState.cart.reduce((sum, i) => sum + i.quantity, 0));
-            setUserName(newState.user?.name ?? null);
-            setUserEmail(newState.user?.email ?? null);
-        });
-
         const onDocMouseDown = (e: MouseEvent) => {
             if (!menuRef.current) return;
             if (!menuRef.current.contains(e.target as Node)) setMenuOpen(false);
         };
 
         document.addEventListener("mousedown", onDocMouseDown);
-
-        return () => {
-            document.removeEventListener("mousedown", onDocMouseDown);
-            unsubscribe();
-        };
+        return () => document.removeEventListener("mousedown", onDocMouseDown);
     }, []);
 
     async function handleLogout() {
@@ -68,7 +60,7 @@ export const Navigation: React.FC<NavigationProps> = ({ items, currentZone }) =>
             // ignore network errors
         } finally {
             setMenuOpen(false);
-            userOperations.logout(); // clears local user + cart (your current logic)
+            dispatch(logoutUser());
             window.location.href = "/";
         }
     }
@@ -107,7 +99,7 @@ export const Navigation: React.FC<NavigationProps> = ({ items, currentZone }) =>
                             <button
                                 type="button"
                                 onClick={() => setMenuOpen((v) => !v)}
-                                className="text-sm text-gray-700 hover:text-black transition-colors inline-flex items-center gap-2"
+                                className="text-sm text-gray-700 hover:text-black transition-colors inline-flex items-center gap-2 cursor-pointer"
                                 aria-haspopup="menu"
                                 aria-expanded={menuOpen}
                             >
@@ -174,7 +166,7 @@ export const Navigation: React.FC<NavigationProps> = ({ items, currentZone }) =>
                         aria-label="Shopping bag"
                         title="Bag"
                     >
-                        <BagIcon className="h-6 w-6" />
+                        <BagIcon className="h-10 w-10" />
 
                         {cartCount > 0 && (
                             <span className="absolute -top-1 -right-1 min-w-4 h-4 px-1 rounded-full bg-black text-white text-[9px] inline-flex items-center justify-center">

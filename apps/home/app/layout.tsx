@@ -2,7 +2,8 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
 import { CartDrawer } from '@repo/ui';
-import AuthBootstrapper from "../components/AuthBootstrapper";
+import { SharedStateProvider } from '@repo/shared-state';
+import AuthBootstrapper from "../components/auth-bootstrapper";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -30,9 +31,11 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
-        <AuthBootstrapper />
-        {children}
-        <CartDrawer />
+        <SharedStateProvider>
+          <AuthBootstrapper />
+          {children}
+          <CartDrawer />
+        </SharedStateProvider>
       </body>
     </html>
   );

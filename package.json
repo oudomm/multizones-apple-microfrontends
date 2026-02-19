@@ -4,6 +4,9 @@
   "scripts": {
     "build": "turbo run build",
     "dev": "turbo run dev",
+    "dev:store": "turbo run dev --filter=home --filter=store",
+    "dev:iphone": "turbo run dev --filter=home --filter=iphone",
+    "dev:mac": "turbo run dev --filter=home --filter=mac",
     "dev:clean": "npm run clean && turbo run dev",
     "clean": "rm -rf apps/*/.next apps/*/.turbo .turbo",
     "lint": "turbo run lint",

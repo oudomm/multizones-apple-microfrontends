@@ -1,5 +1,10 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  images: {
+    remotePatterns: [
+      { protocol: 'https', hostname: 'api.escuelajs.co' },
+    ],
+  },
   transpilePackages: ['@repo/ui', '@repo/shared-state'],
   poweredByHeader: false,
   compress: true,
